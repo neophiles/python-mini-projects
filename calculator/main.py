@@ -1,3 +1,7 @@
+# Simple Tkinter Calculator
+# Created by Marc Neil Tagle, June 2025
+# For educational purposes
+
 import tkinter as tk
 
 class Calculator(tk.Tk):
@@ -19,6 +23,7 @@ class Calculator(tk.Tk):
         self.create_display_widgets()
         self.create_button_widgets()
 
+        self.is_answered = False
 
     def create_containers(self):
 
@@ -30,6 +35,7 @@ class Calculator(tk.Tk):
         self.display_frame.grid(row=0, column=0, sticky='nsew')
         self.buttons_frame.grid(row=1, column=0, sticky='nsew')
 
+        # keep frame sizes / disable automatic resizing
         self.display_frame.grid_propagate(False)
         self.buttons_frame.grid_propagate(False)
 
@@ -39,42 +45,96 @@ class Calculator(tk.Tk):
             for c in range(5):
                  self.buttons_frame.columnconfigure(c, weight=1, uniform='col')
 
-
     def create_display_widgets(self):
+
+        # define display label
         self.display_text = ''
         self.display_label = tk.Label(self.display_frame, height=4, text=self.display_text, font=('Helvetica 12'), bg='lightgray')
         self.display_label.pack(side='right')
         
-
     def create_button_widgets(self):
 
-        self.buttons = {}
         button_texts = [
             ['7', '8', '9', 'DEL', 'AC'],
             ['4', '5', '6', '+', '-'],
-            ['1', '2', '3', 'x', '/'], 
+            ['1', '2', '3', '*', '/'], 
             ['0', '.', '^', '(', ')'],
             ['ANS', '=']
         ]
     
+        # define buttons
         for r, row in enumerate(button_texts):
             for c, text in enumerate(row):
+
                 if r == 4:
                     c += 3
 
+                if text.isdigit():
+                    cmd = lambda t=text: self.number_pressed(t)
+                elif text in ['+', '-', '*', '/', '^', '.', '(', ')']:
+                    cmd = lambda t=text: self.operator_pressed(t)
+                else:
+                    cmd = lambda t=text: self.function_pressed(t)
+
                 btn = tk.Button(self.buttons_frame, text=text, font=('Helvetica 12'), 
-                                borderwidth=3, cursor='hand2', command=lambda t=text: self.on_button_click(t))
+                                borderwidth=3, cursor='hand2', command=cmd)
                 btn.grid(row=r, column=c, sticky='nsew')
+                    
+    def clear_display(self):
+        self.display_text = ''
+        self.change_display()
+        self.is_answered = False
+        print(f"Answered State: {self.is_answered}")
 
-                self.buttons[text] = btn
-
-
-    def on_button_click(self, value):
-        self.display_text += value
+    def change_display(self):
         self.display_label.config(text=self.display_text)
 
-        print(f"You clicked: {value}")
+    def number_pressed(self, str_num):
+        if self.is_answered: self.clear_display()
+        self.display_text += str_num
+        self.change_display()
 
-       
+    def operator_pressed(self, str_op):
+        if self.is_answered: self.clear_display()
+        self.display_text += str_op
+        self.change_display()
+    
+    def function_pressed(self, str_func):
+
+        if str_func == 'DEL':
+            self.display_text = self.display_text[:-1]
+            self.change_display()
+
+        if str_func == 'AC':
+            self.clear_display()
+
+        if str_func == 'ANS':
+            if self.is_answered: self.clear_display()
+            answer = self.retrieve_answer()
+            self.display_text += answer
+            self.change_display()
+
+        if str_func == '=':
+            try:
+                result = str(eval(self.display_text.replace('^', '**')))
+                self.display_text = result
+                self.save_answer(result)
+            except:
+                self.display_text = 'Error'
+            self.change_display()
+            self.is_answered = True
+            print(f"Answered State: {self.is_answered}")
+
+    def save_answer(self, answer):
+        # Stores recent previous answer to answer.txt
+        with open('answer.txt', 'w') as file:
+            file.write(answer)
+
+    def retrieve_answer(self):
+        # Gets recent previous answer from answer.txt
+        with open('answer.txt', 'r') as file:
+            answer = file.read()
+        return answer
+
 app = Calculator()
 app.mainloop()
