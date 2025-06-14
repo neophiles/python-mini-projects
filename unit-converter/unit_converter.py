@@ -51,4 +51,8 @@ class UnitConverter:
         else:
             converted = basic_length * system[unit_to]
 
+        # removes trailing zero decimal if result is a whole number
+        if converted % 1 == 0:
+            converted = int(converted)
+
         return converted
