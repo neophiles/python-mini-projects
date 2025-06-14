@@ -15,7 +15,7 @@ class App(tk.Tk):
         self.resizable(0, 0) # disables window resizing
 
         # define text fonts
-        self.normat_text = font.Font(family="Helvetica", size=12)
+        self.normal_text = font.Font(family="Helvetica", size=12)
         self.bold_text = font.Font(family="Helvetica", size=12, weight='bold')
 
         # instantiate UnitConverter
@@ -68,7 +68,7 @@ class App(tk.Tk):
         # create input label and field
         self.input_value=tk.StringVar()
         self.input_label = tk.Label(self.input_frame, text='From:', font=self.bold_text)
-        self.input_entry = tk.Entry(self.input_frame, textvariable=self.input_value, font=self.normat_text, width=20)
+        self.input_entry = tk.Entry(self.input_frame, textvariable=self.input_value, font=self.normal_text, width=20)
         
         # create input unit dropdown
         self.input_unit=tk.StringVar()
@@ -87,7 +87,7 @@ class App(tk.Tk):
         # create output label and field
         self.output_value=tk.StringVar()
         self.output_label = tk.Label(self.output_frame, text='To:', font=self.bold_text)
-        self.output_entry = tk.Entry(self.output_frame, textvariable=self.output_value, font=self.normat_text, width=20, state='readonly')
+        self.output_entry = tk.Entry(self.output_frame, textvariable=self.output_value, font=self.normal_text, width=20, state='readonly')
 
         # create output unit dropdown
         self.output_unit=tk.StringVar()
@@ -103,13 +103,15 @@ class App(tk.Tk):
     
     def create_footer_frame_widgets(self):
 
-        # create reset fields and convert button
+        # create buttons
         self.reset_btn = tk.Button(self.footer_frame, text='Clear', command=self.reset_fields)
         self.convert_btn = tk.Button(self.footer_frame, text='Convert', command=self.convert)
+        self.copy_btn = tk.Button(self.footer_frame, text='Copy Result', command=self.copy_to_clipboard)
 
         # place buttons on the frame grid
         self.reset_btn.grid(row=0, column=0, padx=5, pady=5, sticky='w')
-        self.convert_btn.grid(row=0, column=1, padx=5, pady=5, sticky='w')        
+        self.convert_btn.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        self.copy_btn.grid(row=0, column=2, padx=5, pady=5, sticky='w')       
 
     def input_unit_selected(self, event):
         selected = self.input_unit_cbbx.get()
@@ -131,10 +133,11 @@ class App(tk.Tk):
             if input_value != '' and all(unit in self.units for unit in [input_unit, output_unit]):
 
                 # converts units
-                result = self.unit_converter.convert(int(input_value), input_unit, output_unit)
+                self.result = self.unit_converter.convert(float(input_value), input_unit, output_unit)
+                print(f"Successfull converted: {input_value} {input_unit} = {self.result} {output_unit}")
 
                 # displays conversion in the output value field
-                output_value = self.output_value.set(result)
+                self.output_value.set(self.result)
 
             else:
                 print("All fields not filled.")
@@ -149,6 +152,16 @@ class App(tk.Tk):
         self.input_unit_cbbx.set("Select unit")
         self.output_unit_cbbx.set("Select unit")
         print("Fields cleared.")
+
+    def copy_to_clipboard(self):
+        # copies converted result to clipboard
+        if self.result: # checks if there is a result
+            self.clipboard_clear()
+            self.clipboard_append(self.result)
+            self.update()
+            print("Copied to clipboard!")
+        else:
+            print("Nothing to copy.")
 
 if __name__ == '__main__':
     app = App()
