@@ -1,10 +1,10 @@
 # Unit Converter
 
-A beginner-friendly unit conversion tool built with Python and Tkinter. This GUI application now supports multiple measurement types, including **length**, **mass**, and **volume**, and is designed to be further expanded.
+A beginner-friendly unit conversion tool built with Python and Tkinter. This GUI application now supports multiple measurement types, including **length**, **mass**, **volume**, and **temperature**.
 
 ## Features
 
-- Convert between units of **length**, **mass**, and **volume**
+- Convert between units of **length**, **mass**, **volume**, and **temperature**
 - Dropdown selector to choose the **measurement type**
 - Two dropdown menus (comboboxes) to select **source** and **target** units
 - Dynamic unit options update based on selected measurement type
@@ -20,11 +20,18 @@ A beginner-friendly unit conversion tool built with Python and Tkinter. This GUI
 ## Code Design
 
 - Conversion factors are organized in a **dictionary of dictionaries** by measurement type inside the `UnitConverter` class
+- Temperature uses **custom formulas** instead of scaling factors
 - Class-based **modular design** for a clear separation of logic and UI
 - Easily **extensible**: just add new unit mappings and conversions to the `UnitConverter` class
 
-## Future Plans
+## What I Learned
 
-- Add support for:
-  - **Temperature** (e.g., Celsius <-> Fahrenheit)
-- Improve **UX/UI styling** (e.g., dark mode, responsive layout)
+- How to build a GUI using Python's Tkinter library
+- How to separate UI and logic using class-based design
+- How to implement dropdowns (Combobox) and dynamic UI updates
+- The importance of clean code, modularity, and readability
+- How to use Git and write meaningful commit messages
+- How to document a project with a structured and informative README
+- How to perform basic temperature conversions using formulas instead of static factors
+
+This project helped me gain more confidence in Python and GUI development. I'm excited to explore more advanced features and build new tools!
