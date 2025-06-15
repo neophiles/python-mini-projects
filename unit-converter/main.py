@@ -19,7 +19,7 @@ class App(tk.Tk):
         self.bold_text = font.Font(family='Helvetica', size=12, weight='bold')
 
         # define unit measurement types
-        self.measurement_types = ['length', 'mass', 'volume']
+        self.measurement_types = ['length', 'mass', 'volume', 'temperature']
 
         # initialize list of units that will be updated based on selected measurement type
         self.units = []
